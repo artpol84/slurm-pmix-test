@@ -9,14 +9,20 @@ export MAKE_JOBS=$MAKE_JOBS
 . ./libevent.sh
 . ./pmix.sh
 . ./slurm.sh
+. ./munge.sh
 
 mkdir $JNKNS_BUILD_DIR
+mkdir $JNKNS_ROOT_DIR
+
+# Build munge
+build_munge
 
 # Download, configure and install libevent
 build_libevent
 
 # Download, configure and install pmix
 build_pmix
+
 
 # configure and install SLURM
 build_slurm

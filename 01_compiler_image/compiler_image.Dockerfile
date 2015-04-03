@@ -7,7 +7,8 @@ RUN apt-get update && \
     apt-get install -y gcc make && \
     apt-get install -y wget bzip2 && \
     apt-get install -y git && \
-    apt-get install -y python
+    apt-get install -y python && \
+    apt-get install -y libssl-dev
 
 # Prepare tools for compilation
 COPY ./compilation /root/

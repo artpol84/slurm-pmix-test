@@ -12,7 +12,7 @@ WORKDIR_SRC=$WORK_DIR/src/
 . $BUILD_DIR/build.sh
 
 #. 04_build_image/progress.sh
-SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm
+SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm/
 if [ ! -d $SLURM_SOURCES ]; then
     echo "No slurm sources found. Nothing to check"
     exit 0

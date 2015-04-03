@@ -8,7 +8,7 @@ prepare_copy()
 prepare_run()
 {
     image_name=$1
-    docker build -t ${image_name} -f prepare_slurm.Dockerfile .
+    docker build --no-cache=true -t ${image_name} -f prepare_slurm.Dockerfile .
     docker run --cidfile=./cid ${image_name} /bin/bash -c "cd /root/workdir/scripts/ && ./prepare.sh"
     rm -Rf ${WORKDIR_SRC}/slurm
     docker cp `cat ./cid`:/root/workdir/src/slurm ${WORKDIR_SRC}/
