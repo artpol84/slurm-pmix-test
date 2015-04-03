@@ -2,7 +2,7 @@
 
 build_copy()
 {
-    cp $PREPARE_DIR/build.Dockerfile $1
+    cp $BUILD_DIR/build.Dockerfile $1
 }
 
 build_run()
