@@ -6,7 +6,8 @@ RUN apt-get update && \
     apt-get install -y procps mc && \
     apt-get install -y gcc make && \
     apt-get install -y wget bzip2 && \
-    apt-get install -y git
+    apt-get install -y git && \
+    apt-get install -y python
 
 # Prepare tools for compilation
 COPY ./compilation /root/
