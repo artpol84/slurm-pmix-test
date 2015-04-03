@@ -14,4 +14,5 @@ prepare_run()
     docker cp `cat ./cid`:/root/workdir/src/slurm ${WORKDIR_SRC}/
     docker rm `cat ./cid`
     docker rmi ${image_name}
+    rm cid
 }
