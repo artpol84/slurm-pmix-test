@@ -1,5 +1,4 @@
-all: dev_image.compiled
+#!/bin/bash -xeE
 
-dev_image.compiled: dev_image.Dockerfile
-	docker build -t artpol/dev_image -f dev_image.Dockerfile .
-	touch dev_image.compiled
+docker build --no-cache=true -t artpol/dev_img .
+touch dev_image.compiled

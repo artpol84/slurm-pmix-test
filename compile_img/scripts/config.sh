@@ -5,7 +5,7 @@ source /root/.bashrc
 JNKNS_TOPDIR=/root/workdir/
 JNKNS_BUILD_DIR=$JNKNS_TOPDIR/build
 JNKNS_SOURCE_DIR=$JNKNS_TOPDIR/src
-JNKNS_ROOT_DIR=$JNKNS_TOPDIR/root/
+JNKNS_ROOT_DIR=/opt/
 
 #LIBEVENT package
 LIBEV_VER="2.0.21"

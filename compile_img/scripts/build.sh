@@ -12,7 +12,6 @@ export MAKE_JOBS=$MAKE_JOBS
 . ./munge.sh
 
 mkdir $JNKNS_BUILD_DIR
-mkdir $JNKNS_ROOT_DIR
 
 # Build munge
 build_munge
