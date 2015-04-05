@@ -4,7 +4,7 @@ MAINTAINER Artem Polyakov <artemp@mellanox.com>
 RUN apt-get update && \
     apt-get install -y bzip2 && \
     apt-get install -y libssl1.0.0 && \
-    apt-get install -y procps # && \
+    apt-get install -y procps 
 #    apt-get install -y mc
 
 
