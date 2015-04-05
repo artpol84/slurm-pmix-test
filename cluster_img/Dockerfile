@@ -4,14 +4,12 @@ MAINTAINER Artem Polyakov <artemp@mellanox.com>
 RUN apt-get update && \
     apt-get install -y bzip2 && \
     apt-get install -y libssl1.0.0 && \
-    apt-get install -y procps && \
-    apt-get install -y mc
+    apt-get install -y procps # && \
+#    apt-get install -y mc
 
 
 # Compile packages to be tested
-COPY root.tar.bz2 /
-RUN cd / && tar -xjvf root.tar.bz2
-RUN rm /root.tar.bz2
+ADD root.tar.bz2 /
 
 # Add users for SLURM and munge
 RUN useradd slurm
