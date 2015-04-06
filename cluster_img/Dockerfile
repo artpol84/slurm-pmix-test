@@ -29,7 +29,8 @@ RUN chown slurm -R /opt/var/log/slurm/
 # Prepare munge directorys
 # etc
 RUN dd if=/dev/urandom bs=1 count=1024 > /opt/etc/munge/munge.key
-RUN chmod -R 0700 /opt/etc/munge
+RUN chmod -R 0000 /opt/etc/munge
+RUN chmod -R u+rwX /opt/etc/munge
 RUN chown -R munge:munge /opt/etc/munge
 
 # /var/lib/munge/
