@@ -45,7 +45,7 @@ create_node_image()
 {
     mv $BUILD_DIR/root.tar.bz2 $FINAL_DIR
     cd $FINAL_DIR
-    docker build -t "$CLUSTER_IMG" .
+    docker build --no-cache=true -t "$CLUSTER_IMG" .
     cd $BASE_DIR
 }
 
