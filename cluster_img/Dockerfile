@@ -18,8 +18,11 @@ RUN useradd munge
 # Add cluster user
 RUN useradd -m cuser
 
+# Patch FS Prepare SLURM directorys
+COPY patch-root/ /
+COPY patch-opt/ /opt/
+
 # Prepare SLURM directorys
-COPY patch-root/ /opt/
 RUN mkdir -p /opt/var/spool/slurm/
 RUN chown slurm -R /opt/var/spool/slurm/
 RUN chmod -R 0755 /opt/var/spool/slurm/
