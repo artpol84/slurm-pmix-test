@@ -19,7 +19,9 @@ CLISTER_IMG=`basename $tmp_file`
 
 fix_developer_image()
 {
-    tmp=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME`
+    # NOTE: we need to use <pipeline> || true to 
+    # hide error exit code = 1 from grep
+    tmp=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME || true`
     if [ -z "$tmp" ]; then
         cd $PREPARE_DIR
         ./dev_img.sh
