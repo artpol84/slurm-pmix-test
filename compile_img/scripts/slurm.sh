@@ -14,7 +14,7 @@ build_slurm()
 {
     mkdir $SLURM_BUILD
     cd $SLURM_BUILD
-    CONF_OPTS="--prefix=$SLURM_INSTALL --with-pmix=$PMIX_INSTALL"
+    CONF_OPTS="--prefix=$SLURM_INSTALL --with-pmix=$PMIX_INSTALL --with-munge=$MUNGE_INSTALL"
     $SLURM_SRC/configure $CONF_OPTS
     make
     make install

@@ -23,8 +23,14 @@ COPY patch-root/ /opt/
 RUN mkdir -p /opt/var/spool/slurm/
 RUN chown slurm -R /opt/var/spool/slurm/
 RUN chmod -R 0755 /opt/var/spool/slurm/
+
 RUN mkdir -p /opt/var/log/slurm/
 RUN chown slurm -R /opt/var/log/slurm/
+RUN chmod -R 0755 /opt/var/log/slurm/
+
+RUN mkdir -p /opt/var/run/slurm/
+RUN chown slurm -R /opt/var/run/slurm/
+RUN chmod -R 0755 /opt/var/run/slurm/
 
 # Prepare munge directorys
 # etc
