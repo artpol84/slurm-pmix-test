@@ -14,7 +14,7 @@ BUILD_DIR=$BASE_DIR/compile_img
 BUILD_SRC=$BUILD_DIR/src
 FINAL_DIR=$BASE_DIR/cluster_img
 CLUSTER_IMG_NAME_FILE=`mktemp`
-CLISTER_IMG=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`
+CLUSTER_IMG=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`
 
 
 fix_developer_image()
