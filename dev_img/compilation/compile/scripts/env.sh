@@ -3,7 +3,7 @@
 BASE_PATH=/root/compile/
 SRC_PATH=$BASE_PATH/src
 DISTR_PATH=$BASE_PATH/distr
-PREFIX=/opt/compile_tools/
+PREFIX=/root/compile_tools/
 
 M4_URL_BASE="ftp://ftp.gnu.org/gnu/m4"
 M4_VER="1.4.17"
