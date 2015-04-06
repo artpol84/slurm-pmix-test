@@ -19,7 +19,7 @@ RUN apt-get update && \
 COPY ./compilation /root/
 RUN cd /root/compile/scripts/ && ./download_tools.sh
 RUN cd /root/compile/scripts/ && ./prepare.sh
-RUN echo "BASE=/opt/compile_tools/" >> /root/.bashrc
+RUN echo "BASE=/root/compile_tools/" >> /root/.bashrc
 RUN echo "PATH=\$BASE/bin:\$PATH" >> /root/.bashrc
 RUN echo "LD_LIBRARY_PATH=\$BASE/lib:\$LD_LIBRARY_PATH" >> /root/.bashrc
 RUN rm -Rf /root/compile
