@@ -21,6 +21,7 @@ RUN useradd -m cuser
 # Patch FS Prepare SLURM directorys
 COPY patch-root/ /
 COPY patch-opt/ /opt/
+RUN ldconfig
 
 # Prepare SLURM directorys
 RUN mkdir -p /opt/var/spool/slurm/
