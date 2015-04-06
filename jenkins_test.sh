@@ -11,10 +11,10 @@ fi
 PREPARE_DIR=$BASE_DIR/dev_img
 DEV_IMG_NAME="artpol/dev_img"
 BUILD_DIR=$BASE_DIR/compile_img
-BUILD_SRC=$COMPILE_DIR/src
+BUILD_SRC=$BUILD_DIR/src
 FINAL_DIR=$BASE_DIR/cluster_img
 CLUSTER_IMG_NAME_FILE=`mktemp`
-CLISTER_IMG=`basename $tmp_file`
+CLISTER_IMG=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`
 
 
 fix_developer_image()
@@ -35,7 +35,7 @@ build_all()
     cp -R $SLURM_SOURCES $BUILD_SRC
     cd $BUILD_DIR
     tmp_file=`mktemp`
-    tmp_image=`basename $tmp_file`
+    tmp_image=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`
     ./prepare.sh $tmp_image
     rm $tmp_file
     cd $BASE_DIR
