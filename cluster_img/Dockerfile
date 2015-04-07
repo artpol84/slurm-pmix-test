@@ -27,7 +27,7 @@ RUN mkdir -p /opt/var/spool/slurm/ && \
     chmod -R 0755 /opt/var/log/slurm/ && \
     mkdir -p /opt/var/run/slurm/ && \
     chown slurm -R /opt/var/run/slurm/ && \
-    chmod -R 0755 /opt/var/run/slurm/ && \
+    chmod -R 0755 /opt/var/run/slurm/
 
 # Prepare munge directorys
 # etc
