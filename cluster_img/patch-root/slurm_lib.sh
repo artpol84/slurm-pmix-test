@@ -7,11 +7,13 @@ get_my_IP()
 
 export_my_IP() 
 {
+    FNAME=$1
     IP=`get_my_IP`
-    echo "$IP" > $1
-    while [ -f $FNAME ]; do
+    echo "$IP" > $FNAME
+    LCOUNT=1
+    while [ "$LCOUNT" -eq 1 ]; do
         # wait until our host appears in /etc/hosts
         # use echo as a short delay
-        echo "1" > /dev/null
+        LCOUNT=`cat $FNAME | wc -l`
     done
 }
