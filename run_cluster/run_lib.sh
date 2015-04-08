@@ -8,8 +8,8 @@ init_run_lib()
         LIB_RUNTIME_DIR=./rundir
     fi
     if [ ! -d $LIB_RUNTIME_DIR ]; then
-        mkdir -p $LIB_RUNTIME_DIR.
-        if [ "$?" -ne 0 ]; then.
+        mkdir -p $LIB_RUNTIME_DIR
+        if [ "$?" -ne 0 ]; then
             echo "Cant create $LIB_RUNTIME_DIR"
             exit 1
         fi
