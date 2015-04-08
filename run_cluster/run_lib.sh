@@ -2,7 +2,7 @@
 
 have_full_IP()
 {
-    tmp=`echo $1 | awk -F "." '{ print NF }`
+    tmp=`echo $1 | awk -F "." '{ print NF }'`
     if [ "$tmp" -eq 4 ]; then
         echo "OK"
     else
@@ -10,40 +10,48 @@ have_full_IP()
     fi
 }
 
+release_machine()
+{
+    HNAME=$1
+    LPATH=`pwd`/map.$2
+    LCOUNT=0
+    while [ "$LCOUNT" -eq 0 ]; do
+        LCOUNT=`cat $lpath | wc -l`
+    done
+    IP=`cat $LPATH`
+    CHECK=`have_full_IP $IP`
+    if [ "$CHECK" != "OK" ]; then
+        echo "Received bad IP from container"
+        exit 1
+    fi
+    echo -e "$IP\t$HNAME" >> hosts
+    cat /dev/null > $LPATH
+}
+
 run_machine()
 {
-    img_name=$1
+    IMG_NAME=$1
     shift
-    hname=$1
+    HNAME=$1
     shift
-    ip_num=$1
+    IP_NUM=$1
     shift
-    run_cmd=$1
+    RUN_CMD=$1
     shift
-    apply=$1
+    APPLY=$1
 
-    lpath=`pwd`/map.$ip_num
-    vpath=/host-to-IP-map.$ip_num
-    rm -f $lpath
-    touch $lpath
-    docker run -dti --hostname="$hname" \
+    LPATH=`pwd`/map.$IP_NUM
+    VPATH=/host-to-IP-map.$IP_NUM
+    rm -f $LPATH
+    touch $LPATH
+    docker run -dti --hostname="$HNAME" \
            -v `pwd`/hosts:/etc/hosts \
-           -v $lpath:$vpath \
+           -v $LPATH:$VPATH \
            -v `pwd`/shared:/shared \
-           $img_name $run_cmd /host-to-IP-map.$ip_num
+           $IMG_NAME \
+           $RUN_CMD /host-to-IP-map.$IP_NUM
 
-    if [ -n "$apply" ]; then
-        LCOUNT=0
-        while [ "$LCOUNT" -eq 0 ]; do
-            LCOUNT=`cat $lpath | wc -l`
-        done
-        ip=`cat $lpath`
-        chk=`have_full_IP $ip`
-        if [ "$chk" != "OK" ]; then
-            echo "Received bad IP from container"
-            exit 1
-        fi
-        echo -e "$ip\t$hname" >> hosts
-        cat /dev/null > $lpath
+    if [ -n "$APPLY" ]; then
+        release_machine $LPATH $HNAME.
     fi
 }
