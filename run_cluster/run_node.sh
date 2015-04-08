@@ -1,8 +1,8 @@
 #!/bin/bash
 
-. run_lib.sh
+. /run_lib.sh
 
 IMG_NAME=$1
-touch hosts
+NODE_NUM=$2
 COUNT=1
-run_machine $IMG_NAME "cndev1" $COUNT /slurmd.sh 1
+run_machine $IMG_NAME "cndev$NODE_NUM" $COUNT /slurmd.sh 1

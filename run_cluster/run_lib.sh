@@ -2,7 +2,7 @@
 
 have_full_IP()
 {
-    tmp=`cat $1 | awk -F "." '{ print NF }`
+    tmp=`echo $1 | awk -F "." '{ print NF }`
     if [ "$tmp" -eq 4 ]; then
         echo "OK"
     else
@@ -26,8 +26,10 @@ run_machine()
     vpath=/host-to-IP-map.$ip_num
     rm -f $lpath
     touch $lpath
-    docker run -ti --hostname="$hname" \
-           -v `pwd`/hosts:/etc/hosts -v $lpath:$vpath \
+    docker run -dti --hostname="$hname" \
+           -v `pwd`/hosts:/etc/hosts \
+           -v $lpath:$vpath \
+           -v `pwd`/shared:/shared \
            $img_name $run_cmd /host-to-IP-map.$ip_num
 
     if [ -n "$apply" ]; then
@@ -41,5 +43,7 @@ run_machine()
             echo "Received bad IP from container"
             exit 1
         fi
+        echo -e "$ip\t$hname" >> hosts
+        cat /dev/null > $lpath
     fi
 }
