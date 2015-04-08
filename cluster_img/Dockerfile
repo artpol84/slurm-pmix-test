@@ -31,8 +31,7 @@ RUN mkdir -p /opt/var/spool/slurm/ && \
 
 # Prepare munge directorys
 # etc
-RUN dd if=/dev/urandom bs=1 count=1024 > /opt/etc/munge/munge.key && \
-    chmod -R 0000 /opt/etc/munge && \
+RUN chmod -R 0000 /opt/etc/munge && \
     chmod -R u+rwX /opt/etc/munge && \
     chown -R munge:munge /opt/etc/munge && \
     mkdir -p /opt/var/lib/munge && \
