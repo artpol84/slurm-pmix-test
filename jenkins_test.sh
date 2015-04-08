@@ -17,6 +17,7 @@ BUILD_SRC=$BUILD_DIR/src
 FINAL_DIR=$BASE_DIR/cluster_img
 CLUSTER_IMG_NAME_FILE=`mktemp`
 CLUSTER_IMG=`basename $CLUSTER_IMG_NAME_FILE | tr '[:upper:]' '[:lower:]'`
+ROOT_TAR_NAME="root.tar.bz2"
 
 
 fix_developer_image()
@@ -41,6 +42,10 @@ fix_developer_image()
 
 build_all()
 {
+    if [ -f $FINAL_DIR/$ROOT_TAR_NAME ]; then
+        #already build root fs
+        return
+    fi
     mkdir -p $BUILD_SRC
     cp -R $SLURM_SOURCES $BUILD_SRC
     cd $BUILD_DIR
@@ -53,7 +58,7 @@ build_all()
 
 create_node_image()
 {
-    mv $BUILD_DIR/root.tar.bz2 $FINAL_DIR
+    mv $BUILD_DIR/$ROOT_TAR_NAME $FINAL_DIR
     cd $FINAL_DIR
     docker build --no-cache=true -t "$CLUSTER_IMG" .
     cd $BASE_DIR
