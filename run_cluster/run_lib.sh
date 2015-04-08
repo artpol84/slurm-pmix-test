@@ -1,5 +1,23 @@
 #!/bin/bash
 
+init_run_lib()
+{
+    if [ -n "$1" ]; then
+        RUNTIME_DIR=$1
+    else
+        RUNTIME_DIR=./rundir
+    fi
+    if [ ! -d $RUNTIME_DIR ]; then
+        mkdir -p $RUNTIME_DIR.
+        if [ "$?" -ne 0 ]; then.
+            echo "Cant create $RUNTIME_DIR"
+            exit 1
+        fi
+    fi
+    CIDS_FILE=$RUNTIME_DIR/container_cids
+    rm -f $CIDS_FILE
+}
+
 have_full_IP()
 {
     tmp=`echo $1 | awk -F "." '{ print NF }'`
@@ -13,10 +31,10 @@ have_full_IP()
 release_machine()
 {
     HNAME=$1
-    LPATH=`pwd`/map.$2
+    LPATH=$RUNTIME_DIR/map.$2
     LCOUNT=0
     while [ "$LCOUNT" -eq 0 ]; do
-        LCOUNT=`cat $lpath | wc -l`
+        LCOUNT=`cat $LPATH | wc -l`
     done
     IP=`cat $LPATH`
     CHECK=`have_full_IP $IP`
@@ -24,7 +42,7 @@ release_machine()
         echo "Received bad IP from container"
         exit 1
     fi
-    echo -e "$IP\t$HNAME" >> hosts
+    echo -e "$IP\t$HNAME" >> $RUNTIME_DIR/hosts
     cat /dev/null > $LPATH
 }
 
@@ -40,18 +58,22 @@ run_machine()
     shift
     APPLY=$1
 
-    LPATH=`pwd`/map.$IP_NUM
+    LPATH=$RUNTIME_DIR/map.$IP_NUM
     VPATH=/host-to-IP-map.$IP_NUM
     rm -f $LPATH
     touch $LPATH
     docker run -dti --hostname="$HNAME" \
-           -v `pwd`/hosts:/etc/hosts \
-           -v $LPATH:$VPATH \
-           -v `pwd`/shared:/shared \
-           $IMG_NAME \
-           $RUN_CMD /host-to-IP-map.$IP_NUM
+            --cidfile=$RUNTIME_DIR/tmp.cid \
+            -v $RUNTIME_DIR/hosts:/etc/hosts \
+            -v $LPATH:$VPATH \
+            -v $RUNTIME_DIR/shared:/shared \
+            $IMG_NAME \
+            $RUN_CMD /host-to-IP-map.$IP_NUM
+    cat $RUNTIME_DIR/tmp.cid >> $CIDS_FILE
+    echo >> $CIDS_FILE
+    rm $RUNTIME_DIR/tmp.cid
 
     if [ -n "$APPLY" ]; then
-        release_machine $LPATH $HNAME.
+        release_machine $HNAME $IP_NUM
     fi
 }
