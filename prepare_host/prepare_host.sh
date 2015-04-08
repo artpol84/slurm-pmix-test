@@ -82,6 +82,7 @@ build_slurm()
     make
     make install
     cd $BASE_DIR
+    cp ./munge.key $MUNGE_INSTALL/etc/munge/
 }
 
 build_prepare_tools

@@ -77,7 +77,7 @@ prepare_host()
     mkdir -p $HOST_DIR/src
     cp -R $SLURM_SOURCES $HOST_DIR/src
     cd $HOST_DIR
-    ./prepare_host.sh
+    ./prepare_host.sh $PREFIX_DIR
     cd $BASE_DIR
 }
 
