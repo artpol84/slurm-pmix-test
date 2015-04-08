@@ -1,4 +1,4 @@
-FROM debian
+FROM node_img
 MAINTAINER Artem Polyakov <artemp@mellanox.com>
 
 RUN apt-get update && \

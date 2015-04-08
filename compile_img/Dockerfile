@@ -1,4 +1,4 @@
-FROM artpol/dev_img
+FROM dev_img
 MAINTAINER Artem Polyakov <artemp@mellanox.com>
 
 # Prepare tools for compilation

@@ -8,8 +8,10 @@ if [ ! -d $SLURM_SOURCES ]; then
     echo "No slurm sources found. Nothing to check"
     exit 0
 fi
-PREPARE_DIR=$BASE_DIR/dev_img
-DEV_IMG_NAME="artpol/dev_img"
+DEV_IMG_DIR=$BASE_DIR/dev_img
+DEV_IMG_NAME="dev_img"
+NODE_IMG_DIR=$BASE_DIR/node_img
+NODE_IMG_NAME="node_img"
 BUILD_DIR=$BASE_DIR/compile_img
 BUILD_SRC=$BUILD_DIR/src
 FINAL_DIR=$BASE_DIR/cluster_img
@@ -23,10 +25,18 @@ fix_developer_image()
     # hide error exit code = 1 from grep
     tmp=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME || true`
     if [ -z "$tmp" ]; then
-        cd $PREPARE_DIR
+        cd $DEV_IMG_DIR
         ./dev_img.sh
         cd $BASE_DIR
     fi
+    tmp=`docker images | awk '{ print $1 }' | grep $NODE_IMG_NAME || true`
+    if [ -z "$tmp" ]; then
+        cd $NODE_IMG_DIR
+        ./node_img.sh
+        cd $BASE_DIR
+    fi
+
+
 }
 
 build_all()
