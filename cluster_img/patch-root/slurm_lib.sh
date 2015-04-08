@@ -15,5 +15,13 @@ export_my_IP()
         # wait until our host appears in /etc/hosts
         # use echo as a short delay
         LCOUNT=`cat $FNAME | wc -l`
+        sleep 0.1
+    done
+}
+
+respawning_bash()
+{
+    while [ true ]; do
+        /bin/bash -l
     done
 }
