@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Keep in sync with slurm.conf SlurmctldPort
+SLURM_PORT=6817
+
 init_run_lib()
 {
     if [ -n "$1" ]; then
@@ -62,11 +65,16 @@ run_machine()
     VPATH=/host-to-IP-map.$IP_NUM
     rm -f $LPATH
     touch $LPATH
+    if [ -n "$APPLY" ];
+        #this is slurmctld
+        APPEND_PARAM="--expose=$SLURM_PORT"
+    fi
     docker run -dti --hostname="$HNAME" \
             --cidfile=$LIB_RUNTIME_DIR/tmp.cid \
             -v $LIB_RUNTIME_DIR/hosts:/etc/hosts \
             -v $LPATH:$VPATH \
             -v $LIB_RUNTIME_DIR/shared:/shared \
+            $APPEND_PARAM \
             $IMG_NAME \
             $RUN_CMD /host-to-IP-map.$IP_NUM
     cat $LIB_RUNTIME_DIR/tmp.cid >> $CIDS_FILE
