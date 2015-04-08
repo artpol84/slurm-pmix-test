@@ -8,16 +8,23 @@ if [ ! -d $SLURM_SOURCES ]; then
     echo "No slurm sources found. Nothing to check"
     exit 0
 fi
+
+HOST_DIR=$BASE_DIR/prepare_host
+
+ROOT_TAR_NAME="root.tar.bz2"
+
 DEV_IMG_DIR=$BASE_DIR/dev_img
 DEV_IMG_NAME="dev_img"
+
 NODE_IMG_DIR=$BASE_DIR/node_img
 NODE_IMG_NAME="node_img"
+
 BUILD_DIR=$BASE_DIR/compile_img
 BUILD_SRC=$BUILD_DIR/src
+
 FINAL_DIR=$BASE_DIR/cluster_img
 CLUSTER_IMG_NAME_FILE=`mktemp`
 CLUSTER_IMG=`basename $CLUSTER_IMG_NAME_FILE | tr '[:upper:]' '[:lower:]'`
-ROOT_TAR_NAME="root.tar.bz2"
 
 
 fix_developer_image()
@@ -64,11 +71,26 @@ create_node_image()
     cd $BASE_DIR
 }
 
+prepare_host()
+{
+    PREFIX_DIR=$1
+    mkdir -p $HOST_DIR/src
+    cp -R $SLURM_SOURCES $HOST_DIR/src
+    cd $HOST_DIR
+    ./prepare_host.sh
+    cd $BASE_DIR
+}
+
 #run_cluster()
 #{
 #    
 #}
 
+if [ "$1" = "--prepare-host" ]; then
+    prefix_dir=$2
+    prepare_host $prefix_dir
+    return
+fi
 
 # Make sure that we have developer image ready for use.
 # Developer image is the machine with full set of packages 

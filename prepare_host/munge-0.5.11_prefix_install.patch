@@ -1,0 +1,33 @@
+diff -Naur munge-0.5.11/src/etc/Makefile.am munge-0.5.11_new/src/etc/Makefile.am
+--- munge-0.5.11/src/etc/Makefile.am	2013-08-28 01:35:31.000000000 +0700
++++ munge-0.5.11_new/src/etc/Makefile.am	2015-04-08 12:05:13.248842089 +0600
+@@ -51,11 +51,7 @@
+ 	  $(INSTALL) -m 0644 \
+ 	    "$(builddir)/munge.pc" "$(DESTDIR)$(libdir)/pkgconfig/munge.pc"; \
+ 	fi
+-	if test -d "$(prefix)/lib/systemd/system"; then \
+-	  UNITDIR="$(prefix)/lib/systemd/system"; \
+-	elif test -d "/lib/systemd/system"; then \
+-	  UNITDIR="/lib/systemd/system"; \
+-	fi; \
++	UNITDIR="$(prefix)/lib/systemd/system";
+ 	if test -n "$${UNITDIR}"; then \
+ 	  $(INSTALL) -m 0755 \
+ 	    -d "$(DESTDIR)$${UNITDIR}"; \
+diff -Naur munge-0.5.11/src/etc/Makefile.in munge-0.5.11_new/src/etc/Makefile.in
+--- munge-0.5.11/src/etc/Makefile.in	2013-08-28 01:35:31.000000000 +0700
++++ munge-0.5.11_new/src/etc/Makefile.in	2015-04-08 12:05:01.416842435 +0600
+@@ -481,12 +481,8 @@
+ 	    -d "$(DESTDIR)$(libdir)/pkgconfig"; \
+ 	  $(INSTALL) -m 0644 \
+ 	    "$(builddir)/munge.pc" "$(DESTDIR)$(libdir)/pkgconfig/munge.pc"; \
+-	fi
+-	if test -d "$(prefix)/lib/systemd/system"; then \
+-	  UNITDIR="$(prefix)/lib/systemd/system"; \
+-	elif test -d "/lib/systemd/system"; then \
+-	  UNITDIR="/lib/systemd/system"; \
+ 	fi; \
++	UNITDIR="$(prefix)/lib/systemd/system"; \
+ 	if test -n "$${UNITDIR}"; then \
+ 	  $(INSTALL) -m 0755 \
+ 	    -d "$(DESTDIR)$${UNITDIR}"; \
