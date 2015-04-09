@@ -74,8 +74,6 @@ create_node_image()
 prepare_host()
 {
     PREFIX_DIR=$1
-    mkdir -p $HOST_DIR/src
-    cp -R $SLURM_SOURCES $HOST_DIR/src
     cd $HOST_DIR
     ./prepare_host.sh $PREFIX_DIR
     cd $BASE_DIR
@@ -89,7 +87,7 @@ prepare_host()
 if [ "$1" = "--prepare-host" ]; then
     prefix_dir=$2
     prepare_host $prefix_dir
-    return
+    exit 0
 fi
 
 # Make sure that we have developer image ready for use.

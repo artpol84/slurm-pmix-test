@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Put your SLURM options here
+#SBATCH --partition=debug         # change to proper partition name or remove
+#SBATCH --time=00:10:00           # put proper time of reservation here
+#SBATCH --nodes=5                 # number of nodes
+#SBATCH --ntasks-per-node=2       # processes per node
+#SBATCH --job-name="example"      # change to your job name
+
+source /etc/profile
+SLURM_CONF=/opt/etc/slurm.conf
+srun hostname

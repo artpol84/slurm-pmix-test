@@ -77,7 +77,7 @@ build_slurm()
 {
     mkdir $SLURM_BUILD
     cd $SLURM_BUILD
-    CONF_OPTS="--prefix=$SLURM_INSTALL --with-munge=$MUNGE_INSTALL"
+    CONF_OPTS="--prefix=$SLURM_INSTALL --with-munge=$MUNGE_INSTALL --with-hdf5=no"
     $SLURM_SRC/configure $CONF_OPTS
     make
     make install

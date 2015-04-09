@@ -65,9 +65,9 @@ run_machine()
     VPATH=/host-to-IP-map.$IP_NUM
     rm -f $LPATH
     touch $LPATH
-    if [ -n "$APPLY" ];
+    if [ -n "$APPLY" ]; then
         #this is slurmctld
-        APPEND_PARAM="--expose=$SLURM_PORT"
+        APPEND_PARAM="--expose=$SLURM_PORT -P"
     fi
     docker run -dti --hostname="$HNAME" \
             --cidfile=$LIB_RUNTIME_DIR/tmp.cid \
