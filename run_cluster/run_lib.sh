@@ -172,7 +172,7 @@ run_task_num()
     fi
     flag=0
     count=`cat $WORKING_DIR/${test_name}.count`
-    for i in `seq 1 $count`; then
+    for i in `seq 1 $count`; do
         if [ ! -f "$WORKING_DIR/${test_name}.$i" ]; then
             echo "***"
             echo "*** Error running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i Not found"
