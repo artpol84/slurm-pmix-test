@@ -1,57 +1,68 @@
-#!/bin/bash -lxeE
+#!/bin/bash -leE
 
 # Setup paths
 BASE_DIR=`pwd`
-# Path to the host installation
-export SLURM_HOST_PREFIX=$1
-NODES=$2
-# TODO: has to be parameter too
-SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm/
 
-# Setup path to SLURM source from github. (shuld be passed through env or args).
-if [ ! -d $SLURM_SOURCES ]; then
-    echo "No slurm sources found. Nothing to check"
-    exit 0
-fi
+print_usage()
+{
+    echo "Usage:"
+    echo -e "$0 --prepare [force] <SLURM_HOST_PREFIX>"
+    echo -e "\tSLURM will be compiled and installed in SLURM_HOST_PREFIX"
+    echo -e "\t\"force\" will force replacement of images and SLURM installation"
+    echo -e "$0 --test <SLURM_HOST_PREFIX> <SLURM_SOURCES> <NUM_NODES>"
+    echo -e "\tSLURM_HOST_PREFIX - path where SLURM host intallation can be found"
+    echo -e "\t                    should be the same as for \"--prepare\""
+    echo -e "\tSLURM_SOURCES     - path to the cloned repo that should be tested"
+    echo -e "\tNUM_NODES         - number of virtual machines to boot"
+}
 
-HOST_DIR=$BASE_DIR/prepare_host
+prepare_host()
+{
+    PREFIX_DIR=$1
+    cd $HOST_DIR
 
-ROOT_TAR_NAME="root.tar.bz2"
+    # Sanity check
+    if [ -f "$PREFIX_DIR/bin/srun" ] && [ "$FORCE" != 1]; then
+        echo "WARNING: SLURM installation found in $PREFIX_DIR"
+        echo "Use --force to overwrite it"
+        exit 0
+    elif [ -f "$PREFIX_DIR/bin/srun" ]; then
+        rm --preserve-root -fR $PREFIX_DIR
+    fi
 
-DEV_IMG_DIR=$BASE_DIR/dev_img
-DEV_IMG_NAME="dev_img"
+    ./prepare_host.sh $PREFIX_DIR
+    cd $BASE_DIR
+}
 
-NODE_IMG_DIR=$BASE_DIR/node_img
-NODE_IMG_NAME="node_img"
-
-BUILD_DIR=$BASE_DIR/compile_img
-BUILD_SRC=$BUILD_DIR/src
-
-FINAL_DIR=$BASE_DIR/cluster_img
-CLUSTER_IMG_NAME_FILE=`mktemp`
-CLUSTER_IMG=`basename $CLUSTER_IMG_NAME_FILE | tr '[:upper:]' '[:lower:]'`
-
-RUNNING_DIR=$BASE_DIR/run_cluster
-
-
-fix_developer_image()
+prepare_dev_image()
 {
     # NOTE: we need to use <pipeline> || true to 
     # hide error exit code = 1 from grep
-    tmp=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME || true`
-    if [ -z "$tmp" ]; then
+    STR=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME || true`
+    if [ -n "$STR" ] && [ "$FORCE" != 1]; then
+        echo "WARNING: developer image was found"
+        echo "Use --force to remove it"
+    else
+        if [ -n "$STR" ]; then
+            docker rmi -f $DEV_IMG_NAME
+        fi
         cd $DEV_IMG_DIR
         ./dev_img.sh
         cd $BASE_DIR
     fi
-    tmp=`docker images | awk '{ print $1 }' | grep $NODE_IMG_NAME || true`
-    if [ -z "$tmp" ]; then
+
+    STR=`docker images | awk '{ print $1 }' | grep $NODE_IMG_NAME || true`
+    if [ -n "$STR" ] && [ "$FORCE" != 1]; then
+        echo "WARNING: node image was found"
+        echo "Use --force to remove it"
+    else
+        if [ -n "$STR" ]; then
+            docker rmi -f $NODE_IMG_NAME
+        fi
         cd $NODE_IMG_DIR
         ./node_img.sh
         cd $BASE_DIR
     fi
-
-
 }
 
 build_all()
@@ -78,14 +89,6 @@ create_node_image()
     cd $BASE_DIR
 }
 
-prepare_host()
-{
-    PREFIX_DIR=$1
-    cd $HOST_DIR
-    ./prepare_host.sh $PREFIX_DIR
-    cd $BASE_DIR
-}
-
 run_cluster()
 {
     cd $RUNNING_DIR
@@ -93,31 +96,57 @@ run_cluster()
     cd $BASE_DIR
 }
 
-#run_cluster()
-#{
-#    
-#}
+case "$1" in
+    "--prepare")
+        FORCE=0
+        if [ "$2" == "--force" ]; then
+            FORCE=1
+            shift
+        fi
+        HOST_DIR=$BASE_DIR/prepare_host
+        DEV_IMG_DIR=$BASE_DIR/dev_img
+        DEV_IMG_NAME="dev_img"
+        NODE_IMG_DIR=$BASE_DIR/node_img
+        NODE_IMG_NAME="node_img"
+        prepare_host $2
+        prepare_dev_image
+        ;;
+    "--test")
+        # Enable bash trace
+        ROOT_TAR_NAME="root.tar.bz2"
+        BUILD_DIR=$BASE_DIR/compile_img
+        BUILD_SRC=$BUILD_DIR/src
+        FINAL_DIR=$BASE_DIR/cluster_img
+        CLUSTER_IMG_NAME_FILE=`mktemp`
+        CLUSTER_IMG=`basename $CLUSTER_IMG_NAME_FILE | tr '[:upper:]' '[:lower:]'`
+        RUNNING_DIR=$BASE_DIR/run_cluster
 
-if [ "$1" = "--prepare-host" ]; then
-    prefix_dir=$2
-    prepare_host $prefix_dir
-    exit 0
-fi
+        # Path to the host installation
+        export SLURM_HOST_PREFIX=$1
+        SLURM_SOURCES=$2
+        NODES=$3
+        if [ ! -f $SLURM_HOST_PREFIX/bin/sbatch ] || \
+           [ ! -f $SLURM_HOST_PREFIX/bin/squeue ]; then
+            echo "ERROR: No slurm host installation found."
+            print_usage
+            exit 1
+        fi
+        if [ ! -d $SLURM_SOURCES ]; then
+            echo "ERROR: No slurm sources found. Nothing to check"
+            print_usage
+            exit 1
+        fi
 
-# Make sure that we have developer image ready for use.
-# Developer image is the machine with full set of packages 
-# nessesary to configure and build SLURM, PMIx, libevent and munge.
-fix_developer_image
+        set -x
+        build_all
+        create_node_image
+        run_cluster
 
-# Create temporal image based on dev_image and use 
-# it to build everything
-build_all
-
-# Create final cluster/frontend node image
-create_node_image
-
-# run cluster
-#run_cluster
-
-# Cleanup temp filename
-rm $CLUSTER_IMG_NAME_FILE
+        # Cleanup temp filename
+        rm $CLUSTER_IMG_NAME_FILE
+        ;;
+    *)
+        print_usage
+        exit 1
+        ;;
+esac
