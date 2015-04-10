@@ -13,10 +13,6 @@ export SBATCH=$SLURM_HOST_PREFIX/bin/sbatch
 export SQUEUE=$SLURM_HOST_PREFIX/bin/squeue
 export SCANCEL=$SLURM_HOST_PREFIX/bin/scancel
 
-
-. ./run_lib.sh
-init_run_lib "$AUX_DIR" "$RUN_DIR"
-
 print_usage()
 {
     echo "Usage:"
@@ -28,6 +24,9 @@ if [ -z "$IMG_NAME" ] || [ -z "$COUNT" ]; then
     print_usage
     exit 1
 fi
+
+. ./run_lib.sh
+init_run_lib "$AUX_DIR" "$RUN_DIR"
 
 ################################################################################
 #
@@ -58,12 +57,8 @@ done
 #
 ################################################################################
 
-#COUNT=`count_test_num`
+TESTNUM=`count_test_num`
 
-#for i in seq `1 $COUNT`; do
-    # We need to change working dir (-D option) because
-    # virtual nodes have different FS layout
-#    SBRESP=`$SBATCH -D /shared/ $i`
-#    JOBID=`check_sbatch_resp $SBRESP`
-#    wait_for_job $JOBID
-#done
+for i in `seq 1 $TESTNUM`; do
+    run_test_num $COUNT $i
+done

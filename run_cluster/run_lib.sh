@@ -126,7 +126,8 @@ wait_for_job()
     while [ -n "$state" ]; do
         if [ "$state" = "PD" ] || [ "$state" = "R" ] || \
            [ "$state" = "CG" ] || [ "$state" = "CD" ]; then
-            state=`$SQUEUE -j $JOBID -o "%t" 2>/dev/null | head -n2 | tail -n1`
+            state=`$SQUEUE -j $JOBID -o "%t" 2>/dev/null | \
+                   awk 'BEGIN{ cnt=0; } { if ( cnt == 1 ){ print $1; }; cnt++; }'`
             continue
         fi
         echo "BAD job state!"
@@ -135,14 +136,14 @@ wait_for_job()
 }
 
 
-run_task_num()
+run_test_num()
 {
     NODES=$1
     NUM=$2
     if [ "$NUM" -lt 10 ]; then
         NUM=0$NUM
     fi
-    WORKING_DIR=$LIB_RUN_DIR/shared/
+    WORKING_DIR=$LIB_RUN_DIR/shared
 
     # Prepare task files
     test_name=`ls -1 $LIB_AUX_DIR | grep "${NUM}_.*\.job\.in"`
@@ -154,6 +155,8 @@ run_task_num()
 
     # Submit the job
     export PMIX_TEST_OUTPREFIX="${test_name}"
+    # We need to change working dir (-D option) because
+    # virtual nodes have different FS layout
     SUBMIT_STR=`$SBATCH -D /shared/ $WORKING_DIR/${test_name}.job`
     JOBID=`echo $SUBMIT_STR | awk '{ print $4 }'`
     if [ -z "$JOBID" ]; then
@@ -172,6 +175,7 @@ run_task_num()
     fi
     flag=0
     count=`cat $WORKING_DIR/${test_name}.count`
+    count=`expr $count - 1`
     for i in `seq 1 $count`; do
         if [ ! -f "$WORKING_DIR/${test_name}.$i" ]; then
             echo "***"
@@ -195,6 +199,6 @@ run_task_num()
         exit 1
     fi
     # Cleanup after ourselfs
-    rm $WORKING_DIR/${test_name}.*
-    rm slurm-$JOBID.out
+    rm -f $WORKING_DIR/${test_name}.*
+    rm -f $WORKING_DIR/slurm-$JOBID.out
 }

@@ -10,5 +10,5 @@
 source /etc/profile
 SLURM_CONF=/opt/etc/slurm.conf
 
-echo "RANKS=$SLURM_STEP_NUM_TASKS" > $SLURM_STEP_NUM_TASKS.count
+echo $SLURM_NTASKS > $PMIX_TEST_OUTPREFIX.count
 srun 01_sanity_check.sh
