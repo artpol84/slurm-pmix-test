@@ -2,10 +2,20 @@
 
 IMG_NAME=$1
 COUNT=$2
+BASE_DIR=`pwd`
+AUX_DIR=$BASE_DIR/files
+RUN_DIR=$BASE_DIR/rundir
 
-RUNTIME_DIR=`pwd`/rundir
+# Setup host installation environment
+# 1. Export our slurm.conf
+export SLURM_CONF=$RUN_DIR/slurm.conf
+export SBATCH=$SLURM_HOST_PREFIX/bin/sbatch
+export SQUEUE=$SLURM_HOST_PREFIX/bin/squeue
+export SCANCEL=$SLURM_HOST_PREFIX/bin/scancel
+
+
 . ./run_lib.sh
-init_run_lib "$RUNTIME_DIR"
+init_run_lib "$AUX_DIR" "$RUN_DIR"
 
 print_usage()
 {
@@ -19,17 +29,41 @@ if [ -z "$IMG_NAME" ] || [ -z "$COUNT" ]; then
     exit 1
 fi
 
+################################################################################
+#
+# Boot the virtual cluster
+#
+################################################################################
+
+
 # Run frontend node first
-rm -f $RUNTIME_DIR/hosts
-touch $RUNTIME_DIR/hosts
-run_machine $IMG_NAME "fe" 0 /slurmctl.sh 1
+rm -f $RUN_DIR/hosts
+touch $RUN_DIR/hosts
+run_machine $IMG_NAME "fe" 0 /slurmctl.sh frontend
 
 # Run each node (without release!)
 for i in `seq 1 $COUNT`; do
-    run_machine $IMG_NAME "cndev$i" $i /slurmd.sh
+    run_machine $IMG_NAME "cndev$i" $i /slurmd.sh node
 done
 
-# Release nodes)
+# Release nodes
 for i in `seq 1 $COUNT`; do
     release_machine "cndev$i" $i
 done
+
+
+################################################################################
+#
+# Run tests
+#
+################################################################################
+
+#COUNT=`count_test_num`
+
+#for i in seq `1 $COUNT`; do
+    # We need to change working dir (-D option) because
+    # virtual nodes have different FS layout
+#    SBRESP=`$SBATCH -D /shared/ $i`
+#    JOBID=`check_sbatch_resp $SBRESP`
+#    wait_for_job $JOBID
+#done

@@ -2,6 +2,9 @@
 
 # Setup paths
 BASE_DIR=`pwd`
+# Path to the host installation
+export SLURM_HOST_PREFIX=$1
+
 # Setup path to SLURM source from github. (shuld be passed through env or args).
 SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm/
 if [ ! -d $SLURM_SOURCES ]; then

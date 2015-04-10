@@ -65,12 +65,11 @@ prepare_slurm()
     cd $SOURCE_DIR
     git clone $SLURM_URL
     cd $SLURM_SRC
-    git checkout pmix-new
     export PATH=$PREP_TOOLS_INST/bin:$PATH
     export LD_LIBRARY_PATH=$PREP_TOOLS_INST/lib:$LD_LIBRARY_PATH
     export ACLOCAL_FLAGS='-I /usr/share/aclocal'
     ./autogen.sh
-#    rm -R $TOOL_BASE_PATH
+    rm -R $TOOL_BASE_PATH
 }
 
 build_slurm()
