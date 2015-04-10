@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -lxeE
 
 # Keep in sync with slurm.conf SlurmctldPort
 SLURM_PORT=6817
@@ -33,7 +33,7 @@ have_full_IP()
     if [ "$tmp" -eq 4 ]; then
         echo "OK"
     else
-        echo "ERROR"
+        echo "ERROR, bad IP"
     fi
 }
 
@@ -169,7 +169,7 @@ run_test_num()
 
     # Check task result
     if [ ! -f "$WORKING_DIR/${test_name}.count" ]; then
-        echo "Error running \"${test_name}\" test"
+        echo "ERROR running \"${test_name}\" test"
         cat $WORKING_DIR/slurm-$JOBID.out
         exit 1
     fi
@@ -178,18 +178,13 @@ run_test_num()
     count=`expr $count - 1`
     for i in `seq 1 $count`; do
         if [ ! -f "$WORKING_DIR/${test_name}.$i" ]; then
-            echo "***"
-            echo "*** Error running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i Not found"
-            echo "***"
+            echo "ERROR running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i Not found"
             flag=1
         fi
         rank_result=`cat $WORKING_DIR/${test_name}.$i`
         if [ ! "$rank_result" = "OK" ]; then
-            echo "***"
-            echo "*** Error running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i != OK"
-            echo "***"
+            echo "ERROR running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i != OK"
             cat $WORKING_DIR/${test_name}.$i
-            echo "***"
             flag=1
         fi
     done

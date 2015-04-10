@@ -1,10 +1,15 @@
-#!/bin/bash
+#!/bin/bash -lxeE
 
 IMG_NAME=$1
 COUNT=$2
 BASE_DIR=`pwd`
 AUX_DIR=$BASE_DIR/files
 RUN_DIR=$BASE_DIR/rundir
+
+if [ -z "$SLURM_HOST_PREFIX" ]; then
+    echo "ERROR: Environment var SLURM_HOST_PREFIX wasn't found"
+    exit 1
+fi
 
 # Setup host installation environment
 # 1. Export our slurm.conf
@@ -20,7 +25,7 @@ print_usage()
 }
 
 if [ -z "$IMG_NAME" ] || [ -z "$COUNT" ]; then
-    echo "Not enough arguments!"
+    echo "ERROR: Not enough arguments!"
     print_usage
     exit 1
 fi

@@ -1,12 +1,14 @@
-#!/bin/bash -xeE
+#!/bin/bash -lxeE
 
 # Setup paths
 BASE_DIR=`pwd`
 # Path to the host installation
 export SLURM_HOST_PREFIX=$1
+NODES=$2
+# TODO: has to be parameter too
+SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm/
 
 # Setup path to SLURM source from github. (shuld be passed through env or args).
-SLURM_SOURCES=/home/artpol/WORK/Mellanox/src/SLURM/pmix/jenkins/slurm-git/slurm/
 if [ ! -d $SLURM_SOURCES ]; then
     echo "No slurm sources found. Nothing to check"
     exit 0
@@ -28,6 +30,8 @@ BUILD_SRC=$BUILD_DIR/src
 FINAL_DIR=$BASE_DIR/cluster_img
 CLUSTER_IMG_NAME_FILE=`mktemp`
 CLUSTER_IMG=`basename $CLUSTER_IMG_NAME_FILE | tr '[:upper:]' '[:lower:]'`
+
+RUNNING_DIR=$BASE_DIR/run_cluster
 
 
 fix_developer_image()
@@ -79,6 +83,13 @@ prepare_host()
     PREFIX_DIR=$1
     cd $HOST_DIR
     ./prepare_host.sh $PREFIX_DIR
+    cd $BASE_DIR
+}
+
+run_cluster()
+{
+    cd $RUNNING_DIR
+    ./run_cluster.sh $CLUSTER_IMG $NODES
     cd $BASE_DIR
 }
 
