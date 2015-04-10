@@ -8,6 +8,7 @@ BUILD_DIR=$WORK_DIR/build
 PREP_TOOLS=$WORK_DIR/prep_dir
 PREP_TOOLS_INST=$PREP_TOOLS/install/
 
+rm -Rf $WORK_DIR
 mkdir -p $WORK_DIR
 mkdir -p $BUILD_DIR
 mkdir -p $SOURCE_DIR
@@ -24,9 +25,11 @@ MUNGE_BUILD="$BUILD_DIR/$MUNGE_NAME"
 MUNGE_INSTALL="$INSTALL_DIR/"
 
 # SLURM package
-SLURM_URL="https://github.com/artpol84/slurm.git"
-SLURM_SRC="$SOURCE_DIR/slurm"
-SLURM_BUILD="$BUILD_DIR/slurm/"
+SLURM_BRANCH=pmix-new
+SLURM_ZIP="$SLURM_BRANCH.zip"
+SLURM_URL="https://github.com/artpol84/slurm/archive/$SLURM_ZIP"
+SLURM_SRC="$SOURCE_DIR/slurm-$SLURM_BRANCH"
+SLURM_BUILD="$BUILD_DIR/slurm-$SLURM_BRANCH/"
 SLURM_INSTALL="$INSTALL_DIR/"
 
 
@@ -63,13 +66,14 @@ prepare_slurm()
 {
     # Should stay
     cd $SOURCE_DIR
-    git clone $SLURM_URL
+    wget $SLURM_URL
+    unzip $SLURM_ZIP
     cd $SLURM_SRC
     export PATH=$PREP_TOOLS_INST/bin:$PATH
     export LD_LIBRARY_PATH=$PREP_TOOLS_INST/lib:$LD_LIBRARY_PATH
     export ACLOCAL_FLAGS='-I /usr/share/aclocal'
     ./autogen.sh
-    rm -R $TOOL_BASE_PATH
+    rm -R $PREP_TOOLS_INST
 }
 
 build_slurm()
