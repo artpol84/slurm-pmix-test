@@ -94,6 +94,7 @@ run_cluster()
     cd $RUNNING_DIR
     ./run_cluster.sh $CLUSTER_IMG $NODES
     cd $BASE_DIR
+    docker rmi $CLUSTER_IMG
 }
 
 case "$1" in

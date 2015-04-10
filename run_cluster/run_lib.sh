@@ -197,3 +197,11 @@ run_test_num()
     rm -f $WORKING_DIR/${test_name}.*
     rm -f $WORKING_DIR/slurm-$JOBID.out
 }
+
+run_cleanup()
+{
+    for i in `cat $CIDS_FILE`; do
+        docker kill $i
+        docker rm $i
+    done
+}
