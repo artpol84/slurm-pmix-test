@@ -173,22 +173,30 @@ run_task_num()
         cat $WORKING_DIR/slurm-$JOBID.out
         exit 1
     fi
-    
+    flag=0
     count=`cat $WORKING_DIR/${test_name}.count`
     for i in `seq 1 $count`; then
         if [ ! -f "$WORKING_DIR/${test_name}.$i" ]; then
-            echo "Error running \"${test_name}\" test"
-            cat $WORKING_DIR/slurm-$JOBID.out
-            exit 1
+            echo "***"
+            echo "*** Error running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i Not found"
+            echo "***"
+            flag=1
         fi
         rank_result=`cat $WORKING_DIR/${test_name}.$i`
         if [ ! "$rank_result" = "OK" ]; then
-            echo "Error running \"${test_name}\" test. Rank #$i"
+            echo "***"
+            echo "*** Error running \"${test_name}\" test. $WORKING_DIR/${test_name}.$i != OK"
+            echo "***"
             cat $WORKING_DIR/${test_name}.$i
-            cat $WORKING_DIR/slurm-$JOBID.out
-            exit 1
+            echo "***"
+            flag=1
         fi
     done
+
+    if [ "$flag" -eq 1 ]; then
+        cat $WORKING_DIR/slurm-$JOBID.out
+        exit 1
+    fi
     # Cleanup after ourselfs
     rm $WORKING_DIR/${test_name}.*
     rm slurm-$JOBID.out
