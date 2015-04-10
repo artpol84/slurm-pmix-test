@@ -104,12 +104,9 @@ run_machine()
     echo >> $CIDS_FILE
     if [ "$TYPE" = "frontend" ]; then
         setup_ctl_port `cat $LIB_RUN_DIR/tmp.cid`
-    fi
-    rm $LIB_RUN_DIR/tmp.cid
-
-    if [ -n "$APPLY" ]; then
         release_machine $HNAME $IP_NUM
     fi
+    rm $LIB_RUN_DIR/tmp.cid
 }
 
 
