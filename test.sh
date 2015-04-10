@@ -22,14 +22,15 @@ prepare_host()
     cd $HOST_DIR
 
     # Sanity check
-    if [ -f "$PREFIX_DIR/bin/srun" ] && [ "$FORCE" != 1]; then
-        echo "WARNING: SLURM installation found in $PREFIX_DIR"
-        echo "Use --force to overwrite it"
-        exit 0
-    elif [ -f "$PREFIX_DIR/bin/srun" ]; then
-        rm --preserve-root -fR $PREFIX_DIR
+    if [ -f "$PREFIX_DIR/bin/srun" ] || [ -f "$PREFIX_DIR/bin/munge" ]; then
+        if [ "$FORCE" != "1" ]; then
+            echo "WARNING: SLURM installation found in $PREFIX_DIR"
+            echo "Use --force to overwrite it"
+            exit 1
+        else
+            rm --preserve-root -fR $PREFIX_DIR
+        fi
     fi
-
     ./prepare_host.sh $PREFIX_DIR
     cd $BASE_DIR
 }
@@ -39,9 +40,10 @@ prepare_dev_image()
     # NOTE: we need to use <pipeline> || true to 
     # hide error exit code = 1 from grep
     STR=`docker images | awk '{ print $1 }' | grep $DEV_IMG_NAME || true`
-    if [ -n "$STR" ] && [ "$FORCE" != 1]; then
+    if [ -n "$STR" ] && [ "$FORCE" != "1" ]; then
         echo "WARNING: developer image was found"
         echo "Use --force to remove it"
+        exit 1
     else
         if [ -n "$STR" ]; then
             docker rmi -f $DEV_IMG_NAME
@@ -52,9 +54,10 @@ prepare_dev_image()
     fi
 
     STR=`docker images | awk '{ print $1 }' | grep $NODE_IMG_NAME || true`
-    if [ -n "$STR" ] && [ "$FORCE" != 1]; then
+    if [ -n "$STR" ] && [ "$FORCE" != "1" ]; then
         echo "WARNING: node image was found"
         echo "Use --force to remove it"
+        exit 1
     else
         if [ -n "$STR" ]; then
             docker rmi -f $NODE_IMG_NAME
@@ -78,12 +81,12 @@ build_all()
     tmp_image=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`
     ./prepare.sh $tmp_image
     rm $tmp_file
+    mv $BUILD_DIR/$ROOT_TAR_NAME $FINAL_DIR
     cd $BASE_DIR
 }
 
 create_node_image()
 {
-    mv $BUILD_DIR/$ROOT_TAR_NAME $FINAL_DIR
     cd $FINAL_DIR
     docker build --no-cache=true -t "$CLUSTER_IMG" .
     cd $BASE_DIR
@@ -100,7 +103,7 @@ run_cluster()
 case "$1" in
     "--prepare")
         FORCE=0
-        if [ "$2" == "--force" ]; then
+        if [ "$2" == "force" ]; then
             FORCE=1
             shift
         fi
@@ -113,6 +116,8 @@ case "$1" in
         prepare_dev_image
         ;;
     "--test")
+        #Skip first param
+        shift
         # Enable bash trace
         ROOT_TAR_NAME="root.tar.bz2"
         BUILD_DIR=$BASE_DIR/compile_img
