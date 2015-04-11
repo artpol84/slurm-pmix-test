@@ -15,5 +15,9 @@ build_pmix()
     $PMIX_SRC/configure $CONF_OPTS
     make
     make install
+    # Install PMIx tests
+    cd ./test
+    make
+    make install
     cd $JNKNS_TOPDIR
 }
