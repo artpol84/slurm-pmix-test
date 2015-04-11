@@ -128,6 +128,7 @@ wait_for_job()
            [ "$state" = "CG" ] || [ "$state" = "CD" ]; then
             state=`$SQUEUE -j $JOBID -o "%t" 2>/dev/null | \
                    awk 'BEGIN{ cnt=0; } { if ( cnt == 1 ){ print $1; }; cnt++; }'`
+            sleep 0.1
             continue
         fi
         echo "BAD job state!"
