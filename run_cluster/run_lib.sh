@@ -151,7 +151,7 @@ run_test_num()
     CORES=`cat /proc/cpuinfo | grep 'core id' | uniq | wc -l`
     cat $LIB_AUX_DIR/${test_name}.job.in | \
         sed -e "s/--nodes=xxxx/--nodes=$NODES/" | \
-        sed -e "s/--ntasks-per-node=yyyy/--ntasks-per-node=$CORES/" \ 
+        sed -e "s/--ntasks-per-node=yyyy/--ntasks-per-node=$CORES/" \
         > $WORKING_DIR/${test_name}.job 
 
     if [ -f "$LIB_AUX_DIR/${test_name}.sh" ]; then
