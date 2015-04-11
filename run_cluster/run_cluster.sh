@@ -6,6 +6,9 @@ BASE_DIR=`pwd`
 AUX_DIR=$BASE_DIR/files
 RUN_DIR=$BASE_DIR/rundir
 
+rm -Rf $RUN_DIR
+mkdir -p $RUN_DIR
+
 if [ -z "$SLURM_HOST_PREFIX" ]; then
     echo "ERROR: Environment var SLURM_HOST_PREFIX wasn't found"
     exit 1

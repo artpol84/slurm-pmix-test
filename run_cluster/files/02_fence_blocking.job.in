@@ -4,11 +4,11 @@
 #SBATCH --partition=debug         # change to proper partition name or remove
 #SBATCH --time=00:10:00           # put proper time of reservation here
 #SBATCH --nodes=xxxx              # number of nodes
-#SBATCH --ntasks-per-node=1       # processes per node
+#SBATCH --ntasks-per-node=yyyy    # processes per node
 #SBATCH --job-name="example"      # change to your job name
 
 source /etc/profile
 SLURM_CONF=/opt/etc/slurm.conf
 
 echo $SLURM_NTASKS > $PMIX_TEST_OUTPREFIX.count
-srun --mpi=pmix 01_sanity_check.sh
+srun --mpi=pmix /opt/bin/pmix_client -n $SLURM_TASKS -o $PMIX_TEST_OUTPREFIX -s "slurm.pmix.$SLURM_JOBID.0"

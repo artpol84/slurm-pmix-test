@@ -148,7 +148,11 @@ run_test_num()
     # Prepare task files
     test_name=`ls -1 $LIB_AUX_DIR | grep "${NUM}_.*\.job\.in"`
     test_name=${test_name%".job.in"}
-    cat $LIB_AUX_DIR/${test_name}.job.in | sed -e "s/--nodes=xxxx/--nodes=$NODES/" > $WORKING_DIR/${test_name}.job
+    cat $LIB_AUX_DIR/${test_name}.job.in | \
+        sed -e "s/--nodes=xxxx/--nodes=$NODES/" > $WORKING_DIR/${test_name}.job | \
+        sed -e "s/--ntasks-per-node=yyyy/--ntasks-per-node="`nproc`"/" \ 
+        > $WORKING_DIR/${test_name}.job 
+
     if [ -f "$LIB_AUX_DIR/${test_name}.sh" ]; then
         cp $LIB_AUX_DIR/${test_name}.sh $WORKING_DIR
     fi
