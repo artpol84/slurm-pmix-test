@@ -11,4 +11,4 @@ source /etc/profile
 SLURM_CONF=/opt/etc/slurm.conf
 
 echo $SLURM_NTASKS > $PMIX_TEST_OUTPREFIX.count
-srun --mpi=pmix /opt/bin/pmix_client -n $SLURM_TASKS -o $PMIX_TEST_OUTPREFIX -s "slurm.pmix.$SLURM_JOBID.0"
+srun --mpi=pmix /opt/bin/pmix_client -n $SLURM_NTASKS -o $PMIX_TEST_OUTPREFIX -s "slurm.pmix.$SLURM_JOBID.0"
