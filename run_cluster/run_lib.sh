@@ -149,7 +149,7 @@ run_test_num()
     test_name=`ls -1 $LIB_AUX_DIR | grep "${NUM}_.*\.job\.in"`
     test_name=${test_name%".job.in"}
     cat $LIB_AUX_DIR/${test_name}.job.in | \
-        sed -e "s/--nodes=xxxx/--nodes=$NODES/" > $WORKING_DIR/${test_name}.job | \
+        sed -e "s/--nodes=xxxx/--nodes=$NODES/" | \
         sed -e "s/--ntasks-per-node=yyyy/--ntasks-per-node="`nproc`"/" \ 
         > $WORKING_DIR/${test_name}.job 
 
