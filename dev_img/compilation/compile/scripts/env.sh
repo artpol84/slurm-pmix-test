@@ -28,9 +28,3 @@ LIBTOOL_VER="2.4.2"
 LIBTOOL_NAME=libtool-${LIBTOOL_VER}
 LIBTOOL_DISTR=libtool-${LIBTOOL_VER}."tar.gz"
 LIBTOOL_URL=${LIBTOOL_URL_BASE}/$LIBTOOL_DISTR
-
-FLEX_URL_BASE="http://sourceforge.net/projects/flex/files"
-FLEX_VER="2.5.39"
-FLEX_NAME=flex-${FLEX_VER}
-FLEX_DISTR=flex-${FLEX_VER}."tar.bz2"
-FLEX_URL=${FLEX_URL_BASE}/$FLEX_DISTR/download

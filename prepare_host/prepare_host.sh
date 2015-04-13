@@ -32,7 +32,8 @@ SLURM_SRC="$SOURCE_DIR/slurm-$SLURM_BRANCH"
 SLURM_BUILD="$BUILD_DIR/slurm-$SLURM_BRANCH/"
 SLURM_INSTALL="$INSTALL_DIR/"
 
-
+NPROC=`nproc`
+export MAKE_JOBS=$NPROC
 
 build_prepare_tools()
 {

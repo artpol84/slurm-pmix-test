@@ -2,8 +2,7 @@
 
 # Use as much processors 
 # as we can to speedup
-NPROC=`nproc`
-MAKE_JOBS=`expr $NPROC \* 2`
+MAKE_JOBS=`nproc`
 export MAKE_JOBS=$MAKE_JOBS
 
 . ./env.sh
@@ -34,12 +33,6 @@ make install
 
 tar -xzvf $DISTR_PATH/$LIBTOOL_DISTR -C $SRC_PATH
 cd $SRC_PATH/$LIBTOOL_NAME
-./configure --prefix=$PREFIX
-make
-make install
-
-tar -xjvf $DISTR_PATH/$FLEX_DISTR -C $SRC_PATH
-cd $SRC_PATH/$FLEX_NAME
 ./configure --prefix=$PREFIX
 make
 make install

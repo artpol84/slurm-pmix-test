@@ -11,15 +11,12 @@ wget -P $DISTR_PATH $M4_URL
 wget -P $DISTR_PATH $AUTOCONF_URL
 wget -P $DISTR_PATH $AUTOMAKE_URL
 wget -P $DISTR_PATH $LIBTOOL_URL
-wget -P $DISTR_PATH $FLEX_URL 
-mv $DISTR_PATH/download $DISTR_PATH/$FLEX_DISTR
 
 
 # Use as much processors 
 # as we can to speedup
 NPROC=`nproc`
-MAKE_JOBS=`expr $NPROC \* 2`
-export MAKE_JOBS=$MAKE_JOBS
+export MAKE_JOBS=$NPROC
 
 . ./env.sh
 
@@ -49,12 +46,6 @@ make install
 
 tar -xzvf $DISTR_PATH/$LIBTOOL_DISTR -C $SRC_PATH
 cd $SRC_PATH/$LIBTOOL_NAME
-./configure --prefix=$PREFIX
-make
-make install
-
-tar -xjvf $DISTR_PATH/$FLEX_DISTR -C $SRC_PATH
-cd $SRC_PATH/$FLEX_NAME
 ./configure --prefix=$PREFIX
 make
 make install
