@@ -4,7 +4,6 @@ prepare_slurm()
 {
     # Should stay
     cd $SLURM_SRC
-    git checkout pmix-new
 
     export ACLOCAL_FLAGS='-I /usr/share/aclocal'
     ./autogen.sh
