@@ -75,7 +75,7 @@ build_all()
         return
     fi
     mkdir -p $BUILD_SRC
-    cp -R $SLURM_SOURCES $BUILD_SRC
+    cp -R $SLURM_SOURCES $BUILD_SRC/slurm
     cd $BUILD_DIR
     tmp_file=`mktemp`
     tmp_image=`basename $tmp_file | tr '[:upper:]' '[:lower:]'`

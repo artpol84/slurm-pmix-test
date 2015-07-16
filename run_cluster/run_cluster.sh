@@ -54,8 +54,8 @@ for i in `seq 1 $COUNT`; do
 done
 
 # Release nodes
-for i in `seq 1 $COUNT`; do
-    release_machine "cndev$i" $i
+for i in `seq 0 $COUNT`; do
+    release_machine_no $i
 done
 
 

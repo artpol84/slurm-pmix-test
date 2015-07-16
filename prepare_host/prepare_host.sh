@@ -1,7 +1,12 @@
 #!/bin/bash -eEx
 
+which docker
+
+BASE_DIR=$(dirname `which $0`)
+
 INSTALL_DIR=$1
-BASE_DIR=`pwd`
+INSTALL_DIR=${INSTALL_DIR:=$BASE_DIR/install}
+
 WORK_DIR=$BASE_DIR/workdir/
 SOURCE_DIR=$WORK_DIR/src
 BUILD_DIR=$WORK_DIR/build
@@ -26,8 +31,7 @@ MUNGE_INSTALL="$INSTALL_DIR/"
 
 # SLURM package
 SLURM_BRANCH=pmix-new
-SLURM_ZIP="$SLURM_BRANCH.zip"
-SLURM_URL="https://github.com/artpol84/slurm/archive/$SLURM_ZIP"
+SLURM_URL="https://github.com/artpol84/slurm/archive/$SLURM_BRANCH.zip"
 SLURM_SRC="$SOURCE_DIR/slurm-$SLURM_BRANCH"
 SLURM_BUILD="$BUILD_DIR/slurm-$SLURM_BRANCH/"
 SLURM_INSTALL="$INSTALL_DIR/"
@@ -37,7 +41,7 @@ export MAKE_JOBS=$NPROC
 
 build_prepare_tools()
 {
-    cd prepare_tools
+    cd $BASE_DIR/prepare_tools
     ./prepare.sh $PREP_TOOLS
     cd $BASE_DIR
 }
@@ -68,7 +72,11 @@ prepare_slurm()
     # Should stay
     cd $SOURCE_DIR
     wget $SLURM_URL
-    unzip $SLURM_ZIP
+	if [ -f $SLURM_BRANCH ]; then
+    	unzip $SLURM_BRANCH
+	else
+		unzip $SLURM_BRANCH.zip
+	fi
     cd $SLURM_SRC
     export PATH=$PREP_TOOLS_INST/bin:$PATH
     export LD_LIBRARY_PATH=$PREP_TOOLS_INST/lib:$LD_LIBRARY_PATH
@@ -84,7 +92,7 @@ build_slurm()
     CONF_OPTS="--prefix=$SLURM_INSTALL --with-munge=$MUNGE_INSTALL --with-hdf5=no"
     $SLURM_SRC/configure $CONF_OPTS
     make
-    make install
+	make install
     cd $BASE_DIR
     cp ./munge.key $MUNGE_INSTALL/etc/munge/
 }
