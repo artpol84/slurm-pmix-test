@@ -37,7 +37,7 @@ have_full_IP()
     fi
 }
 
-release_machine()
+store_machine_dns()
 {
     HNAME=$1
     LPATH=$LIB_RUN_DIR/map.$2
@@ -52,8 +52,15 @@ release_machine()
         exit 1
     fi
     echo -e "$IP\t$HNAME" >> $LIB_RUN_DIR/hosts
+}
+
+release_machine_no()
+{
+    MACHINE_NO=$1
+    LPATH=$LIB_RUN_DIR/map.$MACHINE_NO
     cat /dev/null > $LPATH
 }
+
 
 setup_ctl_port()
 {
@@ -94,7 +101,7 @@ run_machine()
     fi
     docker run -dti --hostname="$HNAME" \
             --cidfile=$LIB_RUN_DIR/tmp.cid \
-            -v $LIB_RUN_DIR/hosts:/etc/hosts \
+            -v $LIB_RUN_DIR/hosts:/etc/hosts1 \
             -v $LPATH:$VPATH \
             -v $LIB_RUN_DIR/shared:/shared \
             $APPEND_PARAM \
@@ -104,8 +111,8 @@ run_machine()
     echo >> $CIDS_FILE
     if [ "$TYPE" = "frontend" ]; then
         setup_ctl_port `cat $LIB_RUN_DIR/tmp.cid`
-        release_machine $HNAME $IP_NUM
     fi
+    store_machine_dns $HNAME $IP_NUM
     rm $LIB_RUN_DIR/tmp.cid
 }
 

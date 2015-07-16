@@ -17,6 +17,7 @@ export_my_IP()
         LCOUNT=`cat $FNAME | wc -l`
         sleep 0.1
     done
+    cat /etc/hosts1 > /etc/hosts
 }
 
 respawning_bash()
